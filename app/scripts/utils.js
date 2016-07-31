@@ -11,8 +11,6 @@ Imagination.utils = (function() {
      * getData
      * get data from url using fetch api
      * @param  string url - api endpoint
-     * @param  function successCb - callback to fire if successfull
-     * @param  function errorCb - callback to fire if unsuccessful
      * @return mixed
      */
     getData: function(url) {

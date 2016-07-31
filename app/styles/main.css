@@ -5814,5 +5814,10 @@ button.close {
   .hidden-print {
     display: none !important; } }
 
+.content-stations {
+  padding: 0; }
+  .content-stations li {
+    list-style: none; }
+
 .content-map {
   height: 400px; }
