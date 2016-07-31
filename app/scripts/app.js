@@ -14,6 +14,26 @@ Imagination.app = (function() {
     },
 
     /**
+     * attachEventHandlers
+     * attach click events to each station in the list
+     */
+    attachEventHandlers: function() {
+      var els = document.getElementById('stations').getElementsByTagName('a');
+
+      // attach event to each station in list
+      for (var i = 0; i < els.length; i++) {
+        attachEvent(i);
+      }
+
+      // create closure so we can access i
+      function attachEvent(i) {
+        els[i].addEventListener('click', function() {
+          google.maps.event.trigger(_private.CONST.markers[i], 'click');
+        }, false);
+      }
+    },
+
+    /**
      * getCoachLocations
      * retrieve coach stations based on location
      * @param  string postcode - location to focus search
@@ -22,6 +42,7 @@ Imagination.app = (function() {
       Imagination.utils.getData('https://data.gov.uk/data/api/service/transport/naptan_coach_stations/postcode?postcode=' + postcode + '&distance=3').then(function(res) {
         _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
         _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
+        _private.attachEventHandlers();
       });
     },
 
