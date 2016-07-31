@@ -1,4 +1,5 @@
-var Imagination = Imagination || {};
+window.addEventListener('DOMContentLoaded', function() {
+  var Imagination = this.Imagination || {};
 
-Imagination.utils.init();
-Imagination.app.init();
+  Imagination.app.init();
+});

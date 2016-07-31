@@ -15,36 +15,29 @@ Imagination.utils = (function() {
      * @param  function errorCb - callback to fire if unsuccessful
      * @return mixed
      */
-    getData: function(url, successCb, errorCb) {
-      var req = new Request(url, {
-        method: 'GET',
-        mode: 'cors',
-        redirect: 'follow',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        })
-      });
-
-      fetch(req)
-        .then(errorHandler)
-        .then(function(response) {
-          return response.json().then(function(json) {
-            // if successful fire custom callback
-            if (typeof errorCb == 'function') {
-              return successCb(json);
-            }
+    getData: function(url) {
+      return new Promise(function(resolve, reject) {
+        fetch(url, {
+            method: 'GET'
+          })
+          .then(errorHandler)
+          .then(function(response) {
+            return response.json().then(function(json) {
+              resolve(json);
+            });
+          }).catch(function(error) {
+            reject(error);
           });
-        }).catch(function(error) {
-          // if error fire custom callback
-          if (typeof errorCb == 'function') {
-            return errorCb(error);
-          }
-        });
+      });
 
       // catch any errors
       function errorHandler(response) {
         if (!response.ok) {
-          throw new Error(response.statusText);
+          if (response.status === 500 || response.status === 404) {
+            throw Error(response.statusText + '. Please check the endpoint is correct')
+          } else {
+            throw Error(response.statusText);
+          }
         }
 
         return response;
@@ -77,10 +70,6 @@ Imagination.utils = (function() {
       } else {
         el.className = el.className.replace(new RegExp('\\b' + className + '\\b', 'g'), '');
       }
-    },
-
-    init: function() {
-      console.log('utils init');
     },
   };
 }());
