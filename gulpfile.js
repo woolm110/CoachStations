@@ -28,18 +28,6 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('app/styles'));
 });
 
-gulp.task('images', function() {
-  var cache = require('gulp-cache'),
-    imagemin = require('gulp-imagemin');
-
-  return gulp.src('app/images/**/*')
-    .pipe(cache(imagemin({
-      progressive: true,
-      interlaced: true
-    })))
-    .pipe(gulp.dest('dist/images'));
-});
-
 gulp.task('fonts', function() {
   return gulp.src('app/styles/fonts/*')
     .pipe(gulp.dest('dist/styles/fonts'));
@@ -111,15 +99,14 @@ gulp.task('serve', ['styles', 'connect'], function() {
   gulp.watch([
     'app/*.html',
     'app/styles/**/*.css',
-    'app/scripts/**/*.js',
-    'app/images/**/*'
+    'app/scripts/**/*.js'
   ]).on('change', livereload.changed);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
-gulp.task('build', ['lint', 'html', 'images', 'fonts', 'misc']);
+gulp.task('build', ['lint', 'html', 'fonts', 'misc']);
 
 gulp.task('default', ['clean'], function() {
   gulp.start('build');

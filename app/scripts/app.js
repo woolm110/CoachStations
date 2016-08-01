@@ -2,7 +2,7 @@
 
 var Imagination = Imagination || {};
 
-Imagination.app = (function () {
+Imagination.app = (function() {
   'use strict';
 
   var _private = {
@@ -10,8 +10,9 @@ Imagination.app = (function () {
       location: {
         postcode: 'WC1E 7BL',
       },
+      searchDistance: 3,
       endpoints: {
-        coachStations: 'https://data.gov.uk/data/api/service/transport/naptan_coach_stations/postcode?distance=3&postcode='
+        coachStations: 'https://data.gov.uk/data/api/service/transport/naptan_coach_stations/postcode'
       },
     },
     globals: {
@@ -23,12 +24,12 @@ Imagination.app = (function () {
      * attachEventHandlers
      * attach click events to each station in the list
      */
-    attachEventHandlers: function () {
+    attachEventHandlers: function() {
       var els = document.getElementById('stations').getElementsByTagName('a');
 
       // create closure so we can access i
       function attachEvent(i) {
-        els[i].addEventListener('click', function () {
+        els[i].addEventListener('click', function() {
           google.maps.event.trigger(_private.globals.markers[i], 'click');
         }, false);
       }
@@ -44,11 +45,16 @@ Imagination.app = (function () {
      * retrieve coach stations based on location
      * @param  string postcode - location to focus search
      */
-    getCoachLocations: function (postcode) {
-      Imagination.utils.getData(_private.CONST.endpoints.coachStations + '' + postcode).then(function (res) {
-        _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
-        _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
-        _private.attachEventHandlers();
+    getCoachLocations: function(postcode, distance) {
+      Imagination.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function(res) {
+
+        if (res.result.length) {
+          _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
+          _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
+          _private.attachEventHandlers();
+        } else {
+          document.getElementById('map').innerText = 'No stations found.';
+        }
       });
     },
 
@@ -57,7 +63,7 @@ Imagination.app = (function () {
      * plot markers onto map canvas
      * @param  obj locations - markers to plot on map
      */
-    initMapAndPlotMarkers: function (locations) {
+    initMapAndPlotMarkers: function(locations) {
       var bounds,
         map;
 
@@ -96,9 +102,9 @@ Imagination.app = (function () {
      * @param  object map
      * @return function                  
      */
-    attachMarkerEvent: function (marker, infoWindowContent, infowindow, map) {
-      google.maps.event.addListener(marker, 'click', (function (marker, infoWindowContent, infowindow) {
-        return function () {
+    attachMarkerEvent: function(marker, infoWindowContent, infowindow, map) {
+      google.maps.event.addListener(marker, 'click', (function(marker, infoWindowContent, infowindow) {
+        return function() {
 
           // close any open info windows
           if (_private.globals.prevInfoWindow) {
@@ -119,7 +125,7 @@ Imagination.app = (function () {
      * @param  el - DOM element to attach list to
      * @param  object locations - list of coach locations
      */
-    createCoachList: function (el, locations) {
+    createCoachList: function(el, locations) {
       var html = '';
 
       for (var i = 0; i < locations.length; i++) {
@@ -132,9 +138,14 @@ Imagination.app = (function () {
     /**
      * init
      * gets called on page load from init.js
+     * @param  string postcode - postcode to use for lookup - optional
+     * @param  int distance - radius to use for search - optional
      */
-    init: function () {
-      _private.getCoachLocations(_private.CONST.location.postcode);
+    init: function(postcode, distance) {
+      var pc = postcode ? postcode : _private.CONST.location.postcode,
+        d = distance ? distance : _private.CONST.searchDistance;
+
+      _private.getCoachLocations(pc, d);
     },
   };
 
