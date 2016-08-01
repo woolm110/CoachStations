@@ -2,7 +2,7 @@
 
 var Imagination = Imagination || {};
 
-Imagination.app = (function() {
+Imagination.app = (function () {
   'use strict';
 
   var _private = {
@@ -10,26 +10,27 @@ Imagination.app = (function() {
       location: {
         postcode: 'WC1E 7BL',
       },
-      markers: []
+      markers: [],
+      prevInfoWindow: false
     },
 
     /**
      * attachEventHandlers
      * attach click events to each station in the list
      */
-    attachEventHandlers: function() {
+    attachEventHandlers: function () {
       var els = document.getElementById('stations').getElementsByTagName('a');
+
+      // create closure so we can access i
+      function attachEvent(i) {
+        els[i].addEventListener('click', function () {
+          google.maps.event.trigger(_private.CONST.markers[i], 'click');
+        }, false);
+      }
 
       // attach event to each station in list
       for (var i = 0; i < els.length; i++) {
         attachEvent(i);
-      }
-
-      // create closure so we can access i
-      function attachEvent(i) {
-        els[i].addEventListener('click', function() {
-          google.maps.event.trigger(_private.CONST.markers[i], 'click');
-        }, false);
       }
     },
 
@@ -38,8 +39,8 @@ Imagination.app = (function() {
      * retrieve coach stations based on location
      * @param  string postcode - location to focus search
      */
-    getCoachLocations: function(postcode) {
-      Imagination.utils.getData('https://data.gov.uk/data/api/service/transport/naptan_coach_stations/postcode?postcode=' + postcode + '&distance=3').then(function(res) {
+    getCoachLocations: function (postcode) {
+      Imagination.utils.getData('https://data.gov.uk/data/api/service/transport/naptan_coach_stations/postcode?postcode=' + postcode + '&distance=3').then(function (res) {
         _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
         _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
         _private.attachEventHandlers();
@@ -51,10 +52,8 @@ Imagination.app = (function() {
      * plot markers onto map canvas
      * @param  obj locations - markers to plot on map
      */
-    initMapAndPlotMarkers: function(locations) {
-      var mapOptions,
-        bounds,
-        myLatlng,
+    initMapAndPlotMarkers: function (locations) {
+      var bounds,
         map;
 
       bounds = new google.maps.LatLngBounds();
@@ -77,16 +76,36 @@ Imagination.app = (function() {
         marker.setMap(map);
 
         // attach click event to markers and bind name to info window
-        infowindow = new google.maps.InfoWindow()
+        infowindow = new google.maps.InfoWindow();
         infoWindowContent = locations[i].name;
 
-        google.maps.event.addListener(marker, 'click', (function(marker, infoWindowContent, infowindow) {
-          return function() {
-            infowindow.setContent(infoWindowContent);
-            infowindow.open(map, marker);
-          };
-        })(marker, infoWindowContent, infowindow));
+        _private.attachMarkerEvent(marker, infoWindowContent, infowindow, map);
       }
+    },
+
+    /**
+     * attachMarkerEvent
+     * @param  object marker - marker to attach event to        
+     * @param  string infoWindowContent - content to display in infowindow
+     * @param  object infowindow - window to display info  
+     * @param  object map
+     * @return function                  
+     */
+    attachMarkerEvent: function (marker, infoWindowContent, infowindow, map) {
+      google.maps.event.addListener(marker, 'click', (function (marker, infoWindowContent, infowindow) {
+        return function () {
+          // close any open info windows
+          if (_private.CONST.prevInfoWindow) {
+            _private.CONST.prevInfoWindow.close();
+          }
+
+          // store current info window
+          _private.CONST.prevInfoWindow = infowindow;
+
+          infowindow.setContent(infoWindowContent);
+          infowindow.open(map, marker);
+        };
+      })(marker, infoWindowContent, infowindow));
     },
 
     /**
@@ -94,7 +113,7 @@ Imagination.app = (function() {
      * @param  el - DOM element to attach list to
      * @param  obj locations - list of coach locations
      */
-    createCoachList: function(el, locations) {
+    createCoachList: function (el, locations) {
       var html = '';
 
       for (var i = 0; i < locations.length; i++) {
@@ -108,7 +127,7 @@ Imagination.app = (function() {
      * init
      * gets called on page load
      */
-    init: function() {
+    init: function () {
       _private.getCoachLocations(_private.CONST.location.postcode);
     },
   };
