@@ -48,14 +48,17 @@ Imagination.app = (function () {
     getCoachLocations: function (postcode, distance) {
       Imagination.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function (res) {
 
-        if (res.result.length) {
-          _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
-          _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
-          _private.attachEventHandlers();
-        } else {
-          document.getElementById('map').innerText = 'No stations found.';
-        }
-      });
+          if (res.result.length) {
+            _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
+            _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
+            _private.attachEventHandlers();
+          } else {
+            Imagination.utils.printMessageToEl('stations', 'No stations found. Please increase the search area.');
+          }
+        })
+        .catch(function () {
+          Imagination.utils.printMessageToEl('stations', 'An error occured. Please check the API endpoint is correct.');
+        });
     },
 
     /**
@@ -130,7 +133,7 @@ Imagination.app = (function () {
       var html = '';
 
       for (var i = 0; i < locations.length; i++) {
-        html += '<li><a href="javascript:void(0);">' + locations[i].name + '</a></li>';
+        html += '<a href="javascript:void(0)" class="list-group-item template-station-name">' + locations[i].name + '</a>';
       }
 
       el.innerHTML = html;
@@ -154,9 +157,8 @@ Imagination.app = (function () {
         return _private.getCoachLocations(pc, d);
       }
 
-      document.getElementById('map').innerText = 'Please supply a valid UK postcode.';
-      throw Error('Please supply a valid UK postcode');
-
+      // print error message
+      Imagination.utils.printMessageToEl('stations', 'Please supply a valid UK postcode.');
     }
   };
 

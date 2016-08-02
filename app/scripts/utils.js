@@ -67,6 +67,16 @@ Imagination.utils = (function () {
       parts.shift();
 
       return parts.join(' ');
+    },
+
+    /**
+     * printMessageToEl
+     * print a message inside a DOM element
+     * @param  object el  - element to attach msg to
+     * @param  string msg - message to show
+     */
+    printMessageToEl: function (el, msg) {
+      document.getElementById(el).innerText = msg;
     }
   };
 }());
