@@ -39,5 +39,34 @@ Imagination.utils = (function () {
           });
       });
     },
+
+    /**
+     * isPostcodeValid
+     * check postcode matches UK format
+     * @param  string postcode 
+     * @return bool
+     */
+    isPostcodeValid: function (postcode) {
+      var regex;
+
+      regex = /^((([A-PR-UWYZ][0-9])|([A-PR-UWYZ][0-9][0-9])|([A-PR-UWYZ][A-HK-Y][0-9])|([A-PR-UWYZ][A-HK-Y][0-9][0-9])|([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))\s?([0-9][ABD-HJLNP-UW-Z]{2})|(GIR)\s?(0AA))$/i;
+
+      return regex.test(postcode.toLowerCase());
+    },
+
+    /**
+     * formatPostcode
+     * format postcode to include a space
+     * @param  string postcode - postcode to format
+     * @return string - formatted postcode include space
+     */
+    formatPostcode: function (postcode) {
+      var parts;
+
+      parts = postcode.toUpperCase().match(/^([A-Z]{1,2}\d{1,2}[A-Z]?)\s*(\d[A-Z]{2})$/);
+      parts.shift();
+
+      return parts.join(' ');
+    }
   };
 }());

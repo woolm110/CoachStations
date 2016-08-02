@@ -144,10 +144,20 @@ Imagination.app = (function () {
      */
     init: function (postcode, distance) {
       var pc = postcode ? postcode : _private.CONST.location.postcode,
-        d = distance ? distance : _private.CONST.searchDistance;
+        d = distance ? distance : _private.CONST.searchDistance,
+        formattedPostcode;
 
-      _private.getCoachLocations(pc, d);
-    },
+      if (Imagination.utils.isPostcodeValid(pc)) {
+        // format postcode to include a space
+        formattedPostcode = Imagination.utils.formatPostcode(pc);
+
+        return _private.getCoachLocations(pc, d);
+      }
+
+      document.getElementById('map').innerText = 'Please supply a valid UK postcode.';
+      throw Error('Please supply a valid UK postcode');
+
+    }
   };
 
   return {
