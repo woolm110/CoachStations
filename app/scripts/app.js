@@ -2,7 +2,7 @@
 
 var Imagination = Imagination || {};
 
-Imagination.app = (function() {
+Imagination.app = (function () {
   'use strict';
 
   var _private = {
@@ -24,12 +24,12 @@ Imagination.app = (function() {
      * attachEventHandlers
      * attach click events to each station in the list
      */
-    attachEventHandlers: function() {
+    attachEventHandlers: function () {
       var els = document.getElementById('stations').getElementsByTagName('a');
 
       // create closure so we can access i
       function attachEvent(i) {
-        els[i].addEventListener('click', function() {
+        els[i].addEventListener('click', function () {
           google.maps.event.trigger(_private.globals.markers[i], 'click');
         }, false);
       }
@@ -45,8 +45,8 @@ Imagination.app = (function() {
      * retrieve coach stations based on location
      * @param  string postcode - location to focus search
      */
-    getCoachLocations: function(postcode, distance) {
-      Imagination.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function(res) {
+    getCoachLocations: function (postcode, distance) {
+      Imagination.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function (res) {
 
         if (res.result.length) {
           _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
@@ -63,7 +63,7 @@ Imagination.app = (function() {
      * plot markers onto map canvas
      * @param  obj locations - markers to plot on map
      */
-    initMapAndPlotMarkers: function(locations) {
+    initMapAndPlotMarkers: function (locations) {
       var bounds,
         map;
 
@@ -102,9 +102,9 @@ Imagination.app = (function() {
      * @param  object map
      * @return function                  
      */
-    attachMarkerEvent: function(marker, infoWindowContent, infowindow, map) {
-      google.maps.event.addListener(marker, 'click', (function(marker, infoWindowContent, infowindow) {
-        return function() {
+    attachMarkerEvent: function (marker, infoWindowContent, infowindow, map) {
+      google.maps.event.addListener(marker, 'click', (function (marker, infoWindowContent, infowindow) {
+        return function () {
 
           // close any open info windows
           if (_private.globals.prevInfoWindow) {
@@ -122,10 +122,11 @@ Imagination.app = (function() {
 
     /**
      * createCoachList
+     * create an HTML string of all coaches and append to page
      * @param  el - DOM element to attach list to
      * @param  object locations - list of coach locations
      */
-    createCoachList: function(el, locations) {
+    createCoachList: function (el, locations) {
       var html = '';
 
       for (var i = 0; i < locations.length; i++) {
@@ -141,7 +142,7 @@ Imagination.app = (function() {
      * @param  string postcode - postcode to use for lookup - optional
      * @param  int distance - radius to use for search - optional
      */
-    init: function(postcode, distance) {
+    init: function (postcode, distance) {
       var pc = postcode ? postcode : _private.CONST.location.postcode,
         d = distance ? distance : _private.CONST.searchDistance;
 
