@@ -3,11 +3,11 @@
 var gulp = require('gulp'),
   globbing = require('gulp-css-globbing');
 
-gulp.task('clean', function(cb) {
+gulp.task('clean', function (cb) {
   require('rimraf')('dist', cb);
 });
 
-gulp.task('lint', function() {
+gulp.task('lint', function () {
   var jshint = require('gulp-jshint');
 
   return gulp.src('app/scripts/**/*.js')
@@ -15,7 +15,7 @@ gulp.task('lint', function() {
     .pipe(jshint.reporter('default'));
 });
 
-gulp.task('styles', function() {
+gulp.task('styles', function () {
   var sass = require('gulp-sass');
 
   return gulp.src('app/styles/*.scss')
@@ -28,12 +28,12 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('app/styles'));
 });
 
-gulp.task('fonts', function() {
+gulp.task('fonts', function () {
   return gulp.src('app/styles/fonts/*')
     .pipe(gulp.dest('dist/styles/fonts'));
 });
 
-gulp.task('misc', function() {
+gulp.task('misc', function () {
   return gulp.src([
       'app/*.{ico,png,txt}',
       'app/.htaccess'
@@ -41,7 +41,7 @@ gulp.task('misc', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('html', ['styles'], function() {
+gulp.task('html', ['styles'], function () {
   var uglify = require('gulp-uglify'),
     minifyCss = require('gulp-minify-css'),
     useref = require('gulp-useref'),
@@ -57,23 +57,23 @@ gulp.task('html', ['styles'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('wiredep', function() {
+gulp.task('wiredep', function () {
   var wiredep = require('wiredep').stream;
 
   gulp.src('app/styles/*.scss')
     .pipe(wiredep({
-      directory: 'app/bower_components'
+      directory: 'bower_components'
     }))
     .pipe(gulp.dest('app/styles'));
 
   gulp.src('app/*.html')
     .pipe(wiredep({
-      directory: 'app/bower_components'
+      directory: 'bower_components'
     }))
     .pipe(gulp.dest('app'));
 });
 
-gulp.task('connect', function() {
+gulp.task('connect', function () {
   var connect = require('connect');
   var serveStatic = require('serve-static');
   var serveIndex = require('serve-index');
@@ -84,12 +84,12 @@ gulp.task('connect', function() {
 
   require('http').createServer(app)
     .listen(9000)
-    .on('listening', function() {
+    .on('listening', function () {
       console.log('Started connect web server on http://localhost:9000.');
     });
 });
 
-gulp.task('serve', ['styles', 'connect'], function() {
+gulp.task('serve', ['styles', 'connect'], function () {
   var livereload = require('gulp-livereload');
 
   livereload.listen();
@@ -108,6 +108,6 @@ gulp.task('serve', ['styles', 'connect'], function() {
 
 gulp.task('build', ['lint', 'html', 'fonts', 'misc']);
 
-gulp.task('default', ['clean'], function() {
+gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });

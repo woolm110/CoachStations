@@ -5,7 +5,9 @@
     "bootstrap-sass-official": "~3.3.0",
     "jquery": "~1.11.0",
     "modernizr": "~2.8.1",
-    "bourbon": "^4.2.7"
+    "bourbon": "^4.2.7",
+    "mocha": "^3.0.0",
+    "chai": "^3.5.0"
   },
   "devDependencies": {}
 }
