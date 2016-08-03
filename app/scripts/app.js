@@ -44,6 +44,7 @@ Imagination.app = (function () {
      * getCoachLocations
      * retrieve coach stations based on location
      * @param  string postcode - location to focus search
+     * @param  int distance - distace to focus search (KM)
      */
     getCoachLocations: function (postcode, distance) {
       Imagination.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function (res) {
@@ -72,7 +73,6 @@ Imagination.app = (function () {
 
       bounds = new google.maps.LatLngBounds();
 
-      // set center point to imagination office
       map = new google.maps.Map(document.getElementById('map'));
 
       // lopp over and add markers 
@@ -154,7 +154,7 @@ Imagination.app = (function () {
         // format postcode to include a space
         formattedPostcode = Imagination.utils.formatPostcode(pc);
 
-        return _private.getCoachLocations(pc, d);
+        return _private.getCoachLocations(formattedPostcode, d);
       }
 
       // print error message
