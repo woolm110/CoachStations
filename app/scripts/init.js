@@ -3,5 +3,5 @@
 window.addEventListener('DOMContentLoaded', function () {
   var Imagination = this.Imagination || {};
 
-  Imagination.app.init('SW83QE');
+  Imagination.app.init();
 });
