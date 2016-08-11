@@ -1,8 +1,8 @@
 /*global google */
 
-var Imagination = Imagination || {};
+var CoachStations = CoachStations || {};
 
-Imagination.app = (function () {
+CoachStations.app = (function () {
   'use strict';
 
   var _private = {
@@ -47,18 +47,18 @@ Imagination.app = (function () {
      * @param  int distance - distace to focus search (KM)
      */
     getCoachLocations: function (postcode, distance) {
-      Imagination.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function (res) {
+      CoachStations.utils.getData(_private.CONST.endpoints.coachStations + '?distance=' + distance + '&postcode=' + postcode).then(function (res) {
 
           if (res.result.length) {
             _private.initMapAndPlotMarkers(res.result); // plot the markers onto a map
             _private.createCoachList(document.querySelectorAll('.content-stations')[0], res.result); // create a list of all coach locations
             _private.attachEventHandlers();
           } else {
-            Imagination.utils.printMessageToEl('stations', 'No stations found. Please increase the search area.');
+            CoachStations.utils.printMessageToEl('stations', 'No stations found. Please increase the search area.');
           }
         })
         .catch(function () {
-          Imagination.utils.printMessageToEl('stations', 'An error occured. Please check the API endpoint is correct.');
+          CoachStations.utils.printMessageToEl('stations', 'An error occured. Please check the API endpoint is correct.');
         });
     },
 
@@ -150,15 +150,15 @@ Imagination.app = (function () {
         d = distance ? distance : _private.CONST.searchDistance,
         formattedPostcode;
 
-      if (Imagination.utils.isPostcodeValid(pc)) {
+      if (CoachStations.utils.isPostcodeValid(pc)) {
         // format postcode to include a space
-        formattedPostcode = Imagination.utils.formatPostcode(pc);
+        formattedPostcode = CoachStations.utils.formatPostcode(pc);
 
         return _private.getCoachLocations(formattedPostcode, d);
       }
 
       // print error message
-      Imagination.utils.printMessageToEl('stations', 'Please supply a valid UK postcode.');
+      CoachStations.utils.printMessageToEl('stations', 'Please supply a valid UK postcode.');
     }
   };
 

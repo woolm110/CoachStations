@@ -1,6 +1,6 @@
-var Imagination = Imagination || {};
+var CoachStations = CoachStations || {};
 
-Imagination.utils = (function () {
+CoachStations.utils = (function () {
   'use strict';
 
   return {

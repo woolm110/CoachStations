@@ -1,7 +1,7 @@
 'use strict';
 
 window.addEventListener('DOMContentLoaded', function () {
-  var Imagination = this.Imagination || {};
+  var CoachStations = this.CoachStations || {};
 
-  Imagination.app.init();
+  CoachStations.app.init();
 });
